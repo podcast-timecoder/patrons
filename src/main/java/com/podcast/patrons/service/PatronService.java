@@ -6,6 +6,7 @@ import com.patreon.resources.Pledge;
 import com.podcast.patrons.CampaingNotFoundException;
 import com.podcast.patrons.model.Patron;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,8 +18,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PatronService {
 
-    private static final String AUTOMATION_REMARKS_CAMPAIGN = "automation-remarks.com";
     private final PatreonAPI patreonAPI;
+
+    @Value("${campaign}")
+    private String campaign;
 
     public List<Patron> getAllPatrons() throws IOException {
         Campaign campaignAutomationRemarks  = getCampaign(patreonAPI);
@@ -34,7 +37,7 @@ public class PatronService {
         return patreonAPI
                 .fetchCampaigns().get()
                 .stream()
-                .filter(campaign -> campaign.getCreationName().equals(AUTOMATION_REMARKS_CAMPAIGN))
+                .filter(campaign -> campaign.getCreationName().equals(this.campaign))
                 .findFirst().orElseThrow(CampaingNotFoundException::new);
     }
 
