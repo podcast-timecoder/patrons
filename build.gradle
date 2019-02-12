@@ -43,6 +43,7 @@ repositories {
 
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-cache'
     compile ('com.patreon:patreon:0.4.2') {
         exclude module: "slf4j-log4j12"
     }
