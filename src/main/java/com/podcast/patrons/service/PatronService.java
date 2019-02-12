@@ -7,6 +7,7 @@ import com.podcast.patrons.CampaingNotFoundException;
 import com.podcast.patrons.model.Patron;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ public class PatronService {
     @Value("${campaign}")
     private String campaign;
 
+    @Cacheable("patrons")
     public List<Patron> getAllPatrons() throws IOException {
         Campaign campaignAutomationRemarks  = getCampaign(patreonAPI);
         List<Pledge> pledgeList = patreonAPI.fetchAllPledges(campaignAutomationRemarks.getId());
