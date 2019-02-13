@@ -22,7 +22,7 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: "io.franzbecker.gradle-lombok"
 apply plugin: "com.google.cloud.tools.jib"
 
-version =  '1.4.0'
+version =  'latest'
 
 bootJar {
     baseName = 'timecoder-patrons'
