@@ -1,0 +1,30 @@
+language: java
+
+services:
+  - docker
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
+script:
+  - ./gradlew assemble jibDockerBuild
+
+after_script:
+  - docker images
+
+before_deploy:
+  - docker tag "$IMAGE_NAME:latest" "${IMAGE_NAME}:${TRAVIS_TAG}"
+  - docker images
+  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+
+deploy:
+  provider: script
+  script: docker push "${IMAGE_NAME}:${TRAVIS_TAG}"
+  on:
+    tags: true
