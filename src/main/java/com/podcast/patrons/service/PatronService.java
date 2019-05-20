@@ -1,5 +1,6 @@
 package com.podcast.patrons.service;
 
+import com.github.jasminb.jsonapi.JSONAPIDocument;
 import com.patreon.PatreonAPI;
 import com.patreon.resources.Campaign;
 import com.patreon.resources.Pledge;
@@ -11,6 +12,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,8 +30,11 @@ public class PatronService {
     @Cacheable("patrons")
     public List<Patron> getAllPatrons() throws IOException {
         Campaign campaignAutomationRemarks  = getCampaign(patreonAPI);
-        List<Pledge> pledgeList = patreonAPI.fetchAllPledges(campaignAutomationRemarks.getId());
-        return pledgeList
+        Collection<Pledge.PledgeField> optionalFields = new ArrayList<>();
+        optionalFields.add(Pledge.PledgeField.TotalHistoricalAmountCents);
+        JSONAPIDocument<List<Pledge>> pledgeList =
+                patreonAPI.fetchPageOfPledges(campaignAutomationRemarks.getId(), 15, null, optionalFields);
+        return pledgeList.get()
                 .stream()
                 .map(this::createPatron)
                 .filter(Patron::isActive)
@@ -48,6 +54,7 @@ public class PatronService {
         patron.setId(Long.parseLong(pledge.getPatron().getId()));
         patron.setFullName(pledge.getPatron().getFullName());
         patron.setAmount(pledge.getAmountCents());
+        patron.setTotalAmount(pledge.getTotalHistoricalAmountCents());
         if (pledge.getDeclinedSince() == null) {
             patron.setActive(true);
         }
