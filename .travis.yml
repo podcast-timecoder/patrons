@@ -24,7 +24,11 @@ before_deploy:
   - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
 
 deploy:
-  provider: script
-  script: docker push "${IMAGE_NAME}:${TRAVIS_TAG}"
-  on:
-    tags: true
+  - provider: script
+    script: docker push "${IMAGE_NAME}:${TRAVIS_TAG}"
+    on:
+     tags: true
+  - provider: script
+    script: docker push "$IMAGE_NAME:latest"
+    on:
+      branch: master
