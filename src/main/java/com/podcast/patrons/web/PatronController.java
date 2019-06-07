@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.util.List;
 
 import static com.podcast.patrons.conf.CachesConst.PATRONS;
@@ -25,7 +24,7 @@ public class PatronController {
     private final CacheService cacheService;
 
     @RequestMapping(value = "/patrons", method = RequestMethod.GET)
-    public PatronList getAllPatrons() throws IOException {
+    public PatronList getAllPatrons() {
         List<Patron> patronList = patronService.getAllPatrons();
         return new PatronList(patronList.size(), patronList);
     }
