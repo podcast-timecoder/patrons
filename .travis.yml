@@ -29,6 +29,6 @@ deploy:
     on:
      tags: true
   - provider: script
-    script: docker push "${IMAGE_NAME}:latest"
+    script: docker push "$IMAGE_NAME:latest"
     on:
       branch: master
